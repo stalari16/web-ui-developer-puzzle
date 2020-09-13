@@ -8,7 +8,7 @@ import * as BooksActions from './books.actions';
 
 @Injectable()
 export class BooksEffects {
-  searchBooks$ = createEffect(() =>
+  public searchBooks$ = createEffect(() =>
     this.actions$.pipe(
       ofType(BooksActions.searchBooks),
       switchMap(action =>

@@ -7,8 +7,8 @@ import {
 } from './reading-list.reducer';
 import { createBook, createReadingListItem } from '@tmo/shared/testing';
 
-describe('Books Reducer', () => {
-  describe('valid Books actions', () => {
+describe('Reading List Reducer', () => {
+  describe('valid reading list actions', () => {
     let state: State;
 
     beforeEach(() => {
@@ -18,7 +18,7 @@ describe('Books Reducer', () => {
       );
     });
 
-    it('loadBooksSuccess should load books from reading list', () => {
+    it('loadReadingListSuccess should load books from reading list', () => {
       const list = [
         createReadingListItem('A'),
         createReadingListItem('B'),

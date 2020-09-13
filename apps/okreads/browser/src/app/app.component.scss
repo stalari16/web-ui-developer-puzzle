@@ -39,6 +39,15 @@ main {
   margin: 0 auto;
 }
 
+footer {
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  font-size: 12px;
+  color: $gray60;
+}
 .reading-list-container {
   padding: 0;
   width: 400px;
