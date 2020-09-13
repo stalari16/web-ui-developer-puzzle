@@ -8,6 +8,7 @@
             data-testing="toggle-reading-list"
             mat-button
             (click)="drawer.toggle()"
+            aria-label="Reading List"
           >
             Reading List
             <tmo-total-count></tmo-total-count>
@@ -18,13 +19,20 @@
     <main>
       <tmo-book-search></tmo-book-search>
     </main>
+    <footer>
+      <p>2020 Copyright footer goes here</p>
+    </footer>
   </mat-drawer-content>
   <mat-drawer #drawer mode="over" position="end">
     <div class="reading-list-container" data-testing="reading-list-container">
       <h2>
         My Reading List
-        <button mat-icon-button (click)="drawer.close()">
-          <mat-icon>close</mat-icon>
+        <button
+          mat-icon-button
+          (click)="drawer.close()"
+          aria-label="Close Reading List"
+          >
+            <mat-icon>close</mat-icon>
         </button>
       </h2>
       <div class="reading-list-content">

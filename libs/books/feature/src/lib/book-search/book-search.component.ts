@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import {
   addToReadingList,
@@ -9,18 +9,21 @@ import {
 } from '@tmo/books/data-access';
 import { FormBuilder } from '@angular/forms';
 import { Book } from '@tmo/shared/models';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'tmo-book-search',
   templateUrl: './book-search.component.html',
   styleUrls: ['./book-search.component.scss']
 })
-export class BookSearchComponent implements OnInit {
-  books: ReadingListBook[];
+export class BookSearchComponent implements OnInit, OnDestroy {
+  public books: ReadingListBook[];
 
-  searchForm = this.fb.group({
+  public searchForm = this.fb.group({
     term: ''
   });
+
+  private readonly subscriptions = new Subscription();
 
   constructor(
     private readonly store: Store,
@@ -32,27 +35,31 @@ export class BookSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.store.select(getAllBooks).subscribe(books => {
+    this.subscriptions.add(this.store.select(getAllBooks).subscribe(books => {
       this.books = books;
-    });
+    }));
   }
 
-  formatDate(date: void | string) {
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
+
+  public formatDate(date: void | string): string {
     return date
       ? new Intl.DateTimeFormat('en-US').format(new Date(date))
-      : undefined;
+      : '';
   }
 
-  addBookToReadingList(book: Book) {
+  public addBookToReadingList(book: Book): void {
     this.store.dispatch(addToReadingList({ book }));
   }
 
-  searchExample() {
+  public searchExample(): void {
     this.searchForm.controls.term.setValue('javascript');
     this.searchBooks();
   }
 
-  searchBooks() {
+  public searchBooks(): void {
     if (this.searchForm.value.term) {
       this.store.dispatch(searchBooks({ term: this.searchTerm }));
     } else {

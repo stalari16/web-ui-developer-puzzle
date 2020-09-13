@@ -5,10 +5,11 @@ import { of } from 'rxjs';
 import { catchError, concatMap, exhaustMap, map } from 'rxjs/operators';
 import { ReadingListItem } from '@tmo/shared/models';
 import * as ReadingListActions from './reading-list.actions';
+import { TypedAction } from '@ngrx/store/src/models';
 
 @Injectable()
 export class ReadingListEffects implements OnInitEffects {
-  loadReadingList$ = createEffect(() =>
+  public loadReadingList$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ReadingListActions.init),
       exhaustMap(() =>
@@ -26,7 +27,7 @@ export class ReadingListEffects implements OnInitEffects {
     )
   );
 
-  addBook$ = createEffect(() =>
+  public addBook$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ReadingListActions.addToReadingList),
       concatMap(({ book }) =>
@@ -40,7 +41,7 @@ export class ReadingListEffects implements OnInitEffects {
     )
   );
 
-  removeBook$ = createEffect(() =>
+  public removeBook$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ReadingListActions.removeFromReadingList),
       concatMap(({ item }) =>
@@ -56,7 +57,7 @@ export class ReadingListEffects implements OnInitEffects {
     )
   );
 
-  ngrxOnInitEffects() {
+  public ngrxOnInitEffects(): TypedAction<string> {
     return ReadingListActions.init();
   }
 

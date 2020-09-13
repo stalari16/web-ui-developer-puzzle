@@ -27,7 +27,7 @@ describe('BooksEffects', () => {
     httpMock = TestBed.inject(HttpTestingController);
   });
 
-  describe('loadBooks$', () => {
+  describe('searchBooks$', () => {
     it('should work', done => {
       actions = new ReplaySubject();
       actions.next(BooksActions.searchBooks({ term: '' }));
