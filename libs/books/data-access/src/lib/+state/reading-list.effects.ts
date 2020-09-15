@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Actions, createEffect, ofType, OnInitEffects } from '@ngrx/effects';
-import { of } from 'rxjs';
+import { concat, of } from 'rxjs';
 import { catchError, concatMap, exhaustMap, map } from 'rxjs/operators';
 import { ReadingListItem } from '@tmo/shared/models';
 import * as ReadingListActions from './reading-list.actions';
@@ -52,6 +52,18 @@ export class ReadingListEffects implements OnInitEffects {
           catchError(() =>
             of(ReadingListActions.failedRemoveFromReadingList({ item }))
           )
+        )
+      )
+    )
+  );
+
+  public finishBook$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ReadingListActions.finishedFromReadingList),
+      concatMap(({ item, finishedDate }) => 
+        this.http.put(`/api/reading-list/${item.bookId}/finished`, {finishedDate}).pipe(
+          map(() => ReadingListActions.confirmFinishedFromReadingList({ item })),
+          catchError(() => of(ReadingListActions.failedFinishedFromReadingList({ item })))
         )
       )
     )
