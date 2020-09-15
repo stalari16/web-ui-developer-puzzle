@@ -41,6 +41,22 @@ export class ReadingListEffects implements OnInitEffects {
     )
   );
 
+  public undoAddBook$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ReadingListActions.undoAddToReadingList),
+      concatMap(({ book }) => 
+        this.http.delete(`/api/reading-list/${book.id}`).pipe(
+          map(() =>
+            ReadingListActions.confirmedRemoveFromReadingList({ item: { bookId: book.id , ...book } })
+          ),
+          catchError(() => 
+            of(ReadingListActions.failedRemoveFromReadingList({ item: { bookId: book.id , ...book } }))
+          )
+        )
+      )
+    )    
+  );
+
   public removeBook$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ReadingListActions.removeFromReadingList),
@@ -51,6 +67,26 @@ export class ReadingListEffects implements OnInitEffects {
           ),
           catchError(() =>
             of(ReadingListActions.failedRemoveFromReadingList({ item }))
+          )
+        )
+      )
+    )
+  );
+
+  public undoRemoveBook$ = createEffect(() => 
+    this.actions$.pipe(
+      ofType(ReadingListActions.undoRemoveFromReadingList),
+      concatMap(({ item }) => 
+        this.http.post('/api/reading-list', { id: item.bookId, ...item }).pipe(
+          map(() =>
+            ReadingListActions.confirmedAddToReadingList({
+              book: { id: item.bookId, ...item }
+            })
+          ),
+          catchError(() =>
+            of(ReadingListActions.failedAddToReadingList({
+              book: { id: item.bookId, ...item }
+            }))
           )
         )
       )

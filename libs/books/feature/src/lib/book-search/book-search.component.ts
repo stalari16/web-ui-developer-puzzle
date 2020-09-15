@@ -5,11 +5,14 @@ import {
   clearSearch,
   getAllBooks,
   ReadingListBook,
-  searchBooks
+  searchBooks,
+  undoAddToReadingList
 } from '@tmo/books/data-access';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormBuilder } from '@angular/forms';
 import { Book } from '@tmo/shared/models';
 import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'tmo-book-search',
@@ -27,7 +30,8 @@ export class BookSearchComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly store: Store,
-    private readonly fb: FormBuilder
+    private readonly fb: FormBuilder,
+    private readonly snackBar: MatSnackBar
   ) {}
 
   get searchTerm(): string {
@@ -52,6 +56,11 @@ export class BookSearchComponent implements OnInit, OnDestroy {
 
   public addBookToReadingList(book: Book): void {
     this.store.dispatch(addToReadingList({ book }));
+
+    // Note: No input was given on how long the snackbar should display. 
+    // So, to accomodate screenreader users (Accessibility), duration param was not added for the snackbar.
+    const snackBarRef = this.snackBar.open(`${book.title} added to your reading list.`, 'Undo');
+    snackBarRef.onAction().pipe(take(1)).subscribe(() => this.store.dispatch(undoAddToReadingList({ book })));
   }
 
   public searchExample(): void {
